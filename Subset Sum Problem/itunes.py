@@ -2,6 +2,7 @@
 iTunes reader.
 Authored by Prof. Eric Reed.
 Modified by Zibin Yang.
+Modified by Selma Emekci.
 """
 
 from enum import Enum
@@ -59,6 +60,24 @@ class iTunesEntry:
         if self.sort_by is iTunesEntry.Sort.TIME:
             return self.run_time < other.run_time
         raise NotImplementedError
+
+    def __radd__(self, other):
+        """
+        Allow int + iTunesEntry.
+        If other is 0 (common when using sum()), just return run_time.
+        Otherwise, assume other is an int and add to run_time.
+        """
+        return other + self.run_time
+
+    # Added for assignment #1
+    def __add__(self, other):
+        """
+        Allow iTunesEntry + int or iTunesEntry + iTunesEntry.
+        Always return an int (the sum of run times).
+        """
+        if isinstance(other, iTunesEntry):
+            return self.run_time + other.run_time
+        return self.run_time + other
 
     # zb: disable this __eq__(), because its behavior changes depending on
     # a class attribute, which is undesirable.
