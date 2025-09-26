@@ -1,0 +1,5 @@
+"/workspaces/cs3c_python_/Subset Sum Problem/assignment01.py"
+subset_sum([] , 10) = set()
+subset_sum([5], 10) = {5}
+subset_sum([25, 27, 3, 12, 6, 15, 9, 30, 21, 19], 50) = {25, 19, 6}
+subset_sum_rec([25, 27, 3, 12, 6, 15, 9, 30, 21, 19], 50) = {25, 19, 6}
