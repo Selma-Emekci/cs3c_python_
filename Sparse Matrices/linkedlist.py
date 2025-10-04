@@ -4,6 +4,7 @@ CS3C, LinkedList and OrderedLinkedList
 Copyright 2022 Zibin Yang
 
 (Use it in SparseMatrix implementation.)
+Modified by Selma Emekci
 """
 
 
@@ -102,6 +103,23 @@ class LinkedList:
         for i, d in enumerate(self):
             if i == index:
                 return d
+
+    # Added 10/4/24 by Selma Emekci
+    def __setitem__(self, index, new_data):
+        """
+        Sets the data at the given index to new_data.
+        Raises TypeError if index is not an int
+               ValueError if index is invalid (negative or out of range)
+        """
+        self._validate_index(index)
+
+        # Traverse to the node at the given index
+        curr = self._head
+        for i in range(index):
+            curr = curr.next
+
+        # Update
+        curr.data = new_data
 
     def _validate_index(self, index):
         if not isinstance(index, int):

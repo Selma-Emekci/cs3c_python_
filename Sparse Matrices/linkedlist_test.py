@@ -2,6 +2,7 @@
 CS3C, LinkedList and OrderedLinkedList tests
 
 Copyright 2022 Zibin Yang
+Modified by Selma Emekci.
 """
 import copy
 import unittest
@@ -184,3 +185,29 @@ class OrderedLinkedListTestCase(unittest.TestCase):
 
         with self.assertRaises(KeyError):
             ll.find("no there")
+
+# Added 10/4/25 (Selma Emekci)
+class TestLinkedListSetItem(unittest.TestCase):
+    """
+    Testing my LinkedList according to assignment specificication.
+    """
+    def test_setitem_updates_value(self):
+        ll = LinkedList([1, 2, 3, 4])
+        ll[2] = 99
+        self.assertEqual([x for x in ll], [1, 2, 99, 4])
+
+    def test_setitem_invalid_index_type(self):
+        ll = LinkedList([1, 2, 3])
+        with self.assertRaises(TypeError):
+            ll["one"] = 10
+
+    def test_setitem_invalid_index_value(self):
+        ll = LinkedList([1, 2, 3])
+        with self.assertRaises(ValueError):
+            ll[10] = 5
+        with self.assertRaises(ValueError):
+            ll[-1] = 5
+
+
+if __name__ == "__main__":
+    unittest.main()
