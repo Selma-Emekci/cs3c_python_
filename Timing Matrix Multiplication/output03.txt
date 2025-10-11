@@ -1,0 +1,39 @@
+Test Outputs:
+Dense (mulmat) vs NumPy
+
+Size: 100 x 100
+mulmat                     0.0573 s
+numpy.matmul               0.0007 s
+
+Size: 200 x 200
+mulmat                     0.3714 s
+numpy.matmul               0.0060 s
+
+Size: 300 x 300
+mulmat                     1.3018 s
+numpy.matmul               0.0208 s
+
+Size: 400 x 400
+mulmat                     3.2948 s
+numpy.matmul               0.0579 s
+
+Sparse (__matmul__) ~1% density
+
+Size: 100 x 100 (sparse ~1%)
+Sparse __matmul__          0.0206 s
+
+Size: 200 x 200 (sparse ~1%)
+Sparse __matmul__          0.1803 s
+
+Size: 300 x 300 (sparse ~1%)
+Sparse __matmul__          0.7114 s
+
+Size: 400 x 400 (sparse ~1%)
+Sparse __matmul__          1.8772 s
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 0.002s
+
+OK
+
+Graphs can be found in this Google Sheet: https://docs.google.com/spreadsheets/d/12mWDoFpKfyGc5RY14ihRnLJPWwsUiNjfNI4LnxAHivw/edit?usp=sharing
