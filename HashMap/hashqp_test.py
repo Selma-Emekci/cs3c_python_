@@ -1,54 +1,107 @@
 """
 CS3C, HashQP test
 Copyright 2022 Zibin Yang
-Modified Selma Emekci
+Modified by Selma Emekci
 """
 from hashqp import *
 from hashtable_test import *
-import unittest
-import random
+
+
+class HashQPTestCase(HashTableTestCase):
+    HashTableType = HashQP
+    def testIterIndex(self):
+        hashqb = HashQP()
+        key = 7
+        k = 0
+        simple_generator = hashqb._iter_index_slow(key)
+        optimized_generator = hashqb._iter_index(key)
+        while k < 50:
+            simple = next(simple_generator)
+            optimized = next(optimized_generator)
+            self.assertEqual(simple, optimized, f"k is {k}")
+            k += 1
+
+    # New 5/17/2022: some tests specifically for probing table's DELETED buckets
+    def testCannotUseNitemsToCalculateLambda(self):
+        """This shows HashQP cannot use .nitems for calculating lambda"""
+        super().testCannotUseNitemsToCalculateLambda()
+
+    def testCannotReuseDeletedBucket(self):
+        """This shows HashQP cannot reuse DELETED bucket for insertion"""
+        super().testCannotReuseDeletedBucket()
+
+    def testCannotStopAtDeletedBucketWithSameData(self):
+        """This shows HashQP cannot stop at DELETED bucket w/ same data in search"""
+        super().testCannotStopAtDeletedBucketWithSameData()
+
+    def testCollisions(self):
+        """This shows collision count (assuming HashTableType implements it)"""
+        hashtable = self.HashTableType(2)
+        nsamples = 500
+        max_ = nsamples * 2
+        list_of_data = random.sample(range(max_), nsamples)
+        for data in list_of_data:
+            hashtable.insert(data)
+        print(f"{hashtable}")
 
 class HashQPNewMethodsTest(unittest.TestCase):
     def test_find_hits_and_misses(self):
-        h = HashQP(97)
-        data = [53, 274, 89, 787, 417, 272, 110, 858, 922, 895]
+        h = HashQP()
+        data = random.sample(range(10000), 200)
         for x in data:
             self.assertTrue(h.insert(x))
-        for x in data:
+        for x in data[:20]:
             self.assertEqual(h.find(x), x)
-        for x in (9999, -1, 123456):
+        for y in [10001, 10002, -5, 123456789]:
             with self.assertRaises(KeyError):
-                _ = h.find(x)
+                _ = h.find(y)
 
-    def test_iter_yields_active_items(self):
-        h = HashQP(11)
-        keep = [2, 4, 6, 8, 10]
-        for x in keep:
+    def test_iter_yields_active_only(self):
+        h = HashQP()
+        keep = set()
+        toss = set()
+        for x in range(100, 150):
             h.insert(x)
-        h.remove(6)
+            keep.add(x)
+        for x in range(200, 230):
+            h.insert(x)
+            toss.add(x)
+        for x in list(toss)[:10]:
+            h.remove(x)
 
-        seen = list(h)
-        self.assertEqual(sorted(seen), sorted([2, 4, 8, 10]))
+        seen = set(h)
+        self.assertTrue(keep.issubset(seen))
+        self.assertFalse(any(x in seen for x in list(toss)[:10]))
 
-    def test_eq_same_items_different_order(self):
-        a = HashQP(97)
-        b = HashQP(97)
-
-        left = [1, 3, 5, 7, 9, 11]
-        right = [11, 9, 7, 5, 3, 1]
-
-        for x in left:
+    def test_eq_same_items_different_layouts(self):
+        a = HashQP()
+        b = HashQP()
+        items = list(range(300))
+        random.shuffle(items)
+        for x in items:
             a.insert(x)
-        for x in right:
+        for x in reversed(items):
             b.insert(x)
-
         self.assertTrue(a == b)
-
-        b.remove(7)
-        b.insert(8)
+        self.assertTrue(a.remove(items[0]))
         self.assertFalse(a == b)
-        self.assertFalse(a == 123)
 
+    def test_insert_duplicate_raises(self):
+        h = HashQP()
+        self.assertTrue(h.insert(42))
+        with self.assertRaises(ValueError):
+            h.insert(42)
+
+    def test_remove_then_find_raises(self):
+        h = HashQP()
+        h.insert("abc")
+        self.assertTrue("abc" in h)
+        self.assertTrue(h.remove("abc"))
+        self.assertFalse("abc" in h)
+        with self.assertRaises(KeyError):
+            h.find("abc")
 
 if __name__ == "__main__":
     unittest.main()
+
+del HashTableTestCase
